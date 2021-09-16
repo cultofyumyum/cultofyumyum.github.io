@@ -15,12 +15,12 @@
 
 /*--------------------------------------------------------------------- import Files ---------------------------------------------------------------------*/
 
-@import url(animate.min.css);
-@import url(normalize.css);
-@import url(meanmenu.css);
-@import url(slick.css);
-@import url(jquery-ui.css);
-@import url(nice-select.css);
+@import url(css/labspa/css/animate.min.css);
+@import url(css/labspa/css/normalize.css);
+@import url(css/labspa/css/meanmenu.css);
+@import url(css/labspa/css/slick.css);
+@import url(css/labspa/css/jquery-ui.css);
+@import url(css/labspa/css/nice-select.css);
 
 /*--------------------------------------------------------------------- skeleton ---------------------------------------------------------------------*/
 
