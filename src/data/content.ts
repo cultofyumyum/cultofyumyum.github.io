@@ -1,15 +1,15 @@
 import { Briefcase, GraduationCap, User, FileText, Code, Mail, Github, Linkedin, ExternalLink } from 'lucide-react';
 
 export const personalInfo = {
-  name: "Your Name",
-  title: "Full Stack Developer",
-  email: "your.email@example.com",
-  location: "City, Country",
+  name: "Ryan Conn",
+  title: "Strategy & Operations Analayst",
+  email: "ryanmconn@gmail.com",
+  location: "Denver, CO",
   bio: "A passionate developer with experience in building modern web applications. I love solving complex problems and learning new technologies.",
   socials: [
     { name: 'GitHub', url: 'https://github.com', icon: Github },
-    { name: 'LinkedIn', url: 'https://linkedin.com', icon: Linkedin },
-    { name: 'Email', url: 'mailto:your.email@example.com', icon: Mail },
+    { name: 'LinkedIn', url: 'https://www.linkedin.com/in/ryan-conn-737491bb/', icon: Linkedin },
+    { name: 'Email', url: 'mailto:ryanmconn@gmail.com', icon: Mail },
   ]
 };
 
@@ -22,20 +22,20 @@ export const navigation = [
 
 export const experience = [
   {
-    company: "Tech Solutions Inc.",
-    role: "Senior Developer",
-    period: "2021 - Present",
-    description: "Leading the frontend team in developing high-performance React applications.",
+    company: "Uber",
+    role: "Senior Strategy & Operations Manager",
+    period: "2020 - Present",
+    description: "Description of role",
     achievements: [
       "Reduced load times by 40% using code splitting and lazy loading.",
       "Mentored 5 junior developers and improved team velocity by 20%.",
     ]
   },
   {
-    company: "Creative Web Agency",
-    role: "Full Stack Developer",
-    period: "2018 - 2021",
-    description: "Developed custom CMS solutions for various international clients.",
+    company: "Routematch Software",
+    role: "Implementation Project Manager",
+    period: "2015 - 2020",
+    description: "Description of role",
     achievements: [
       "Built a scalable API using Node.js and Express.",
       "Implemented responsive designs for 50+ client websites.",
@@ -45,17 +45,18 @@ export const experience = [
 
 export const education = [
   {
-    school: "University of Technology",
-    degree: "B.S. in Computer Science",
-    period: "2014 - 2018",
-    description: "Focused on software engineering and data structures."
+    school: "University of Georgia",
+    degree: ["BA in Sociology"
+      , "BSc in Geographic Information Systems"],
+    period: "2009 - 2013",
+    description: "Focus on how groups and societies use technology for communication."
   }
 ];
 
 export const skills = {
   frontend: ["React", "TypeScript", "Tailwind CSS", "Next.js", "Framer Motion"],
   backend: ["Node.js", "Express", "PostgreSQL", "MongoDB", "GraphQL"],
-  tools: ["Git", "Docker", "AWS", "Figma", "Vercel"]
+  tools: ["Git", "Docker", "Figma", "Postman"]
 };
 
 export const projects = [
