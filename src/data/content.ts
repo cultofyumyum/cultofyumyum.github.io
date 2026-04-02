@@ -1,13 +1,13 @@
 import { Briefcase, GraduationCap, User, FileText, Code, Mail, Github, Linkedin, ExternalLink } from 'lucide-react';
 
 export const personalInfo = {
-  name: "Ryan M N Conn",
+  name: "Ryan Conn",
   title: "Strategy & Operations Analayst",
   email: "ryanmconn@gmail.com",
   location: "Denver, CO",
   bio: "A passionate developer with experience in building modern web applications. I love solving complex problems and learning new technologies.",
   socials: [
-    { name: 'GitHub', url: 'https://github.com', icon: Github },
+    { name: 'GitHub', url: 'https://github.com/cultofyumyum/', icon: Github },
     { name: 'LinkedIn', url: 'https://www.linkedin.com/in/ryan-conn-737491bb/', icon: Linkedin },
     { name: 'Email', url: 'mailto:ryanmconn@gmail.com', icon: Mail },
   ]
@@ -55,7 +55,7 @@ export const education = [
 
 export const skills = {
   frontend: ["React", "TypeScript", "Tailwind CSS", "Next.js", "Framer Motion"],
-  backend: ["Node.js", "Express", "PostgreSQL", "MongoDB", "GraphQL"],
+  backend: ["MS SQL Server", "Express", "PostgreSQL", "MongoDB", "GraphQL"],
   tools: ["Git", "Docker", "Figma", "Postman"]
 };
 
@@ -73,6 +73,33 @@ export const projects = [
     tech: ["TypeScript", "Firebase", "React"],
     link: "https://github.com",
     image: "https://picsum.photos/seed/tasks/800/600"
+  }
+];
+
+export const blogPosts = [
+  {
+    id: 1,
+    title: "The Future of Web Development",
+    excerpt: "Exploring the latest trends in frontend frameworks and the rise of AI-driven development.",
+    date: "March 15, 2026",
+    category: "Technology",
+    image: "https://picsum.photos/seed/webdev/800/600"
+  },
+  {
+    id: 2,
+    title: "Mastering Tailwind CSS",
+    excerpt: "Tips and tricks for building beautiful, responsive interfaces faster than ever before.",
+    date: "February 28, 2026",
+    category: "Design",
+    image: "https://picsum.photos/seed/tailwind/800/600"
+  },
+  {
+    id: 3,
+    title: "Why TypeScript is a Must-Have",
+    excerpt: "How static typing can save you hours of debugging and improve your code quality.",
+    date: "January 10, 2026",
+    category: "Programming",
+    image: "https://picsum.photos/seed/typescript/800/600"
   }
 ];
 

@@ -3,6 +3,7 @@ import Layout from './components/Layout';
 import About from './pages/About';
 import Resume from './pages/Resume';
 import Portfolio from './pages/Portfolio';
+import Blog from './pages/Blog';
 import CoverLetter from './pages/CoverLetter';
 import { useEffect } from 'react';
 
@@ -18,6 +19,7 @@ export default function App() {
           <Route index element={<About />} />
           <Route path="resume" element={<Resume />} />
           <Route path="portfolio" element={<Portfolio />} />
+          <Route path="blog" element={<Blog />} />
           <Route path="cover-letter" element={<CoverLetter />} />
           {/* Catch-all route to redirect any unknown paths back to home */}
           <Route path="*" element={<Navigate to="/" replace />} />
