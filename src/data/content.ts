@@ -1,7 +1,7 @@
 import { Briefcase, GraduationCap, User, FileText, Code, Mail, Github, Linkedin, ExternalLink } from 'lucide-react';
 
 export const personalInfo = {
-  name: "Ryan M Conn",
+  name: "Ryan M N Conn",
   title: "Strategy & Operations Analayst",
   email: "ryanmconn@gmail.com",
   location: "Denver, CO",
