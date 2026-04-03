@@ -76,32 +76,7 @@ export const projects = [
   }
 ];
 
-export const blogPosts = [
-  {
-    id: 1,
-    title: "The Future of Web Development",
-    excerpt: "Exploring the latest trends in frontend frameworks and the rise of AI-driven development.",
-    date: "March 15, 2026",
-    category: "Technology",
-    image: "https://picsum.photos/seed/webdev/800/600"
-  },
-  {
-    id: 2,
-    title: "Mastering Tailwind CSS",
-    excerpt: "Tips and tricks for building beautiful, responsive interfaces faster than ever before.",
-    date: "February 28, 2026",
-    category: "Design",
-    image: "https://picsum.photos/seed/tailwind/800/600"
-  },
-  {
-    id: 3,
-    title: "Why TypeScript is a Must-Have",
-    excerpt: "How static typing can save you hours of debugging and improve your code quality.",
-    date: "January 10, 2026",
-    category: "Programming",
-    image: "https://picsum.photos/seed/typescript/800/600"
-  }
-];
+import { blogPosts } from './blog/posts';
 
 export const coverLetterTemplate = {
   greeting: "Dear Hiring Manager,",

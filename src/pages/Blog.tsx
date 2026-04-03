@@ -1,6 +1,7 @@
-import { blogPosts } from '../data/content';
+import { blogPosts } from '../data/blog/posts';
 import { Calendar, Tag, ArrowRight } from 'lucide-react';
 import { motion } from 'motion/react';
+import { Link } from 'react-router-dom';
 
 export default function Blog() {
   return (
@@ -21,7 +22,7 @@ export default function Blog() {
             transition={{ delay: index * 0.1 }}
             className="group flex flex-col bg-white rounded-3xl border border-slate-100 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300"
           >
-            <div className="relative aspect-[16/10] overflow-hidden">
+            <Link to={`/blog/${post.slug}`} className="relative aspect-[16/10] overflow-hidden">
               <img
                 src={post.image}
                 alt={post.title}
@@ -33,7 +34,7 @@ export default function Blog() {
                   {post.category}
                 </span>
               </div>
-            </div>
+            </Link>
 
             <div className="p-6 flex flex-col flex-grow space-y-4">
               <div className="flex items-center gap-4 text-xs text-slate-400 font-medium">
@@ -44,18 +45,23 @@ export default function Blog() {
               </div>
 
               <div className="space-y-2 flex-grow">
-                <h2 className="text-xl font-bold text-slate-900 group-hover:text-brand-600 transition-colors line-clamp-2">
-                  {post.title}
-                </h2>
+                <Link to={`/blog/${post.slug}`}>
+                  <h2 className="text-xl font-bold text-slate-900 group-hover:text-brand-600 transition-colors line-clamp-2">
+                    {post.title}
+                  </h2>
+                </Link>
                 <p className="text-sm text-slate-500 leading-relaxed line-clamp-3">
                   {post.excerpt}
                 </p>
               </div>
 
-              <button className="flex items-center gap-2 text-sm font-bold text-brand-600 group/btn">
+              <Link 
+                to={`/blog/${post.slug}`} 
+                className="flex items-center gap-2 text-sm font-bold text-brand-600 group/btn"
+              >
                 Read More
                 <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
-              </button>
+              </Link>
             </div>
           </motion.article>
         ))}
