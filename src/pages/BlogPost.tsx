@@ -2,7 +2,7 @@ import { useParams, Link, Navigate } from 'react-router-dom';
 import { blogPosts } from '../data/blog/posts';
 import { Calendar, Tag, ArrowLeft, Clock } from 'lucide-react';
 import { motion } from 'motion/react';
-import ReactMarkdown from 'react-markdown';
+import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
 export default function BlogPost() {
@@ -64,9 +64,9 @@ export default function BlogPost() {
         </div>
 
         <div className="prose prose-slate prose-lg max-w-none prose-headings:text-slate-900 prose-headings:font-bold prose-p:text-slate-600 prose-p:leading-relaxed prose-strong:text-slate-900 prose-a:text-brand-600 hover:prose-a:text-brand-700 prose-img:rounded-2xl">
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+          <Markdown remarkPlugins={[remarkGfm]}>
             {post.content}
-          </ReactMarkdown>
+          </Markdown>
         </div>
       </article>
 
