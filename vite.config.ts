@@ -6,7 +6,7 @@ import {defineConfig, loadEnv} from 'vite';
 export default defineConfig(({mode}) => {
   const env = loadEnv(mode, '.', '');
   return {
-    base: './', // More flexible for GitHub Pages subdirectories
+    base: '/', // Correct for custom domains at root (rconn.xyz)
     plugins: [react(), tailwindcss()],
     optimizeDeps: {
       include: ['react-markdown', 'remark-gfm'],
