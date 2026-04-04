@@ -18,7 +18,8 @@ export default function Navbar() {
         
         <div className="flex items-center gap-1 sm:gap-4">
           {navigation.map((item) => {
-            const isActive = location.pathname === item.href;
+            const isActive = location.pathname === item.href || 
+                           (item.href !== '/' && location.pathname.startsWith(item.href));
             const Icon = item.icon;
             
             return (
