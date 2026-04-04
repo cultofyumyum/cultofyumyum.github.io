@@ -1,5 +1,13 @@
 import { Briefcase, GraduationCap, User, FileText, Code, Mail, Github, Linkedin, ExternalLink } from 'lucide-react';
 
+export const navigation = [
+  { name: 'About', href: '/', icon: User },
+  { name: 'Resume', href: '/resume', icon: Briefcase },
+  { name: 'Portfolio', href: '/portfolio', icon: Code },
+  { name: 'Blog', href: '/blog', icon: BookOpen },
+  { name: 'Cover Letter', href: '/cover-letter', icon: FileText },
+];
+
 export const personalInfo = {
   name: "Ryan Conn",
   title: "Strategy & Operations Analayst",
