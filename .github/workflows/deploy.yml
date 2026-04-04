@@ -37,8 +37,8 @@ jobs:
         with:
           node-version: 20
       - name: Install dependencies
-        run: npm install --legacy-peer-deps
-      - name: Debug dependencies
+        run: npm install
+      - name: Verify react-markdown
         run: ls -R node_modules/react-markdown || echo "react-markdown not found"
       - name: Fix permissions
         run: chmod +x node_modules/.bin/vite

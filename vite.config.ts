@@ -6,8 +6,24 @@ import {defineConfig, loadEnv} from 'vite';
 export default defineConfig(({mode}) => {
   const env = loadEnv(mode, '.', '');
   return {
-    base: './', // Ensures assets load correctly on GitHub Pages subfolders
+    base: '/', // Better for custom domains at the root (rconn.xyz)
     plugins: [react(), tailwindcss()],
+    optimizeDeps: {
+      include: ['react-markdown', 'remark-gfm'],
+    },
+    build: {
+      commonjsOptions: {
+        transformMixedEsModules: true,
+        include: [/node_modules/],
+      },
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            markdown: ['react-markdown', 'remark-gfm'],
+          },
+        },
+      },
+    },
     define: {
       'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
     },
