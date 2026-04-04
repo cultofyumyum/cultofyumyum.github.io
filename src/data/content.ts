@@ -21,13 +21,6 @@ export const personalInfo = {
   ]
 };
 
-export const navigation = [
-  { name: 'About', href: '/', icon: User },
-  { name: 'Resume', href: '/resume', icon: Briefcase },
-  { name: 'Portfolio', href: '/portfolio', icon: Code },
-  { name: 'Cover Letter', href: '/cover-letter', icon: FileText },
-];
-
 export const experience = [
   {
     company: "Uber",
