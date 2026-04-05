@@ -4,8 +4,8 @@ export const navigation = [
   { name: 'About', href: '/', icon: User },
   { name: 'Resume', href: '/resume', icon: Briefcase },
   { name: 'Portfolio', href: '/portfolio', icon: Code },
-  { name: 'Blog', href: '/blog', icon: NotebookPen },
   { name: 'Cover Letter', href: '/cover-letter', icon: FileText },
+  //{ name: 'Blog', href: '/blog', icon: NotebookPen },
 ];
 
 export const personalInfo = {
