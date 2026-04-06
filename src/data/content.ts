@@ -24,22 +24,26 @@ export const personalInfo = {
 export const experience = [
   {
     company: "Uber",
-    role: "Senior Strategy & Operations Manager",
+    role: "Product Operations Manager",
     period: "2020 - Present",
-    description: "Description of role",
+    description: "Oversee and develop Customer Support Operational processes for US&C Transit Organizations, totaling over $200M ARR.",
     achievements: [
-      "Reduced load times by 40% using code splitting and lazy loading.",
-      "Mentored 5 junior developers and improved team velocity by 20%.",
+      "Develop Reporting schema, Dashboards, and SOPs to create internal self service BI platform to monitor customer health and account growth.",
+      "Perform market analysis to convert customer feedback into Product Requirement documentation for future development.",
+      "Lead Product GTM managing a global team of cross-functional operational teams, as well as developing KPIs for product launch and adoption.",
+      "Developed a ML tool used by Sales teams to predict fares for rides given a variety of environmental inputs."
     ]
   },
   {
     company: "Routematch Software",
     role: "Implementation Project Manager",
     period: "2015 - 2020",
-    description: "Description of role",
+    description: "Leading new projects and acting as a technical resource for deployments and retention for over 400 Transit Sites in the US, Canada, and Australia.",
     achievements: [
-      "Built a scalable API using Node.js and Express.",
-      "Implemented responsive designs for 50+ client websites.",
+      "Managed the deployment, configuration, and implementation of SaaS platforms across the lifespan of the project.",
+      "Utilized Transact-SQL to architect system designs for Software-Network communications and integration, as well as software configuration for end-users.",
+      "Managing switchover from legacy systems to ensure seamless service delivery to thousands of daily users.",
+      "Developed internal tool to access APIs to reduce new tenancy creation by 90%."
     ]
   }
 ];
