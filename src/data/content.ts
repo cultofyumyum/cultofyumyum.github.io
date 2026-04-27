@@ -3,17 +3,17 @@ import { Briefcase, GraduationCap, User, FileText, Code, Mail, Github, Linkedin,
 export const navigation = [
   { name: 'About', href: '/', icon: User },
   { name: 'Resume', href: '/resume', icon: Briefcase },
-  { name: 'Portfolio', href: '/portfolio', icon: Code },
-  { name: 'Cover Letter', href: '/cover-letter', icon: FileText },
+  //{ name: 'Portfolio', href: '/portfolio', icon: Code },
+  //{ name: 'Cover Letter', href: '/cover-letter', icon: FileText },
   //{ name: 'Blog', href: '/blog', icon: NotebookPen },
 ];
 
 export const personalInfo = {
   name: "Ryan Conn",
-  title: "Strategy & Operations Analayst",
+  title: "Strategy & Product Operations",
   email: "ryanmconn@gmail.com",
   location: "Denver, CO",
-  bio: "A passionate developer with experience in building modern web applications. I love solving complex problems and learning new technologies.",
+  bio: "Strategy & Product Operations with a focus on making sure things work the way customers need.",
   socials: [
     { name: 'GitHub', url: 'https://github.com/cultofyumyum/', icon: Github },
     { name: 'LinkedIn', url: 'https://www.linkedin.com/in/ryan-conn-737491bb/', icon: Linkedin },
@@ -30,8 +30,8 @@ export const experience = [
     achievements: [
       "Develop Reporting schema, Dashboards, and SOPs to create internal self service BI platform to monitor customer health and account growth.",
       "Perform market analysis to convert customer feedback into Product Requirement documentation for future development.",
-      "Lead Product GTM managing a global team of cross-functional operational teams, as well as developing KPIs for product launch and adoption.",
-      "Developed a ML tool used by Sales teams to predict fares for rides given a variety of environmental inputs."
+      "Lead Product GTM managing a global team of cross-functional operational teams, as well as developing KPIs for product launch and adoption."//,
+      //"Developed a ML tool used by Sales teams to predict fares for rides given a variety of environmental inputs."
     ]
   },
   {

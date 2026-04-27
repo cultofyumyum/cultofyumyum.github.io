@@ -73,11 +73,11 @@ export default function About() {
         <div className="grid grid-cols-1 gap-6">
           <div className="p-8 rounded-3xl bg-white border border-slate-100 shadow-sm card-hover">
             <h3 className="font-bold text-slate-900 text-lg mb-2">What I Do</h3>
-            <p className="text-slate-500 leading-relaxed">Building scalable web applications with a focus on user experience and performance.</p>
+            <p className="text-slate-500 leading-relaxed">Building scalable, iterative platforms with a focus on user experience and performance.</p>
           </div>
           <div className="p-8 rounded-3xl bg-white border border-slate-100 shadow-sm card-hover">
             <h3 className="font-bold text-slate-900 text-lg mb-2">My Approach</h3>
-            <p className="text-slate-500 leading-relaxed">Clean code, test-driven development, and constant learning are at the core of my workflow.</p>
+            <p className="text-slate-500 leading-relaxed">Open communication, constant learning, and a desire to solve problems are at the core of my workflow.</p>
           </div>
         </div>
       </section>
