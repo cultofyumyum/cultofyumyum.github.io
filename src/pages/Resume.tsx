@@ -103,10 +103,10 @@ export default function Resume() {
                 </div>
               </div>
 
-              <button className="w-full mt-12 py-4 px-6 bg-brand-500 text-white rounded-2xl font-bold hover:bg-brand-400 transition-all shadow-lg shadow-brand-500/25 flex items-center justify-center gap-2 group">
+              {/*<button className="w-full mt-12 py-4 px-6 bg-brand-500 text-white rounded-2xl font-bold hover:bg-brand-400 transition-all shadow-lg shadow-brand-500/25 flex items-center justify-center gap-2 group">
                 Download CV
                 <ExternalLink className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-              </button>
+              </button>*/}
             </section>
           </div>
         </aside>
