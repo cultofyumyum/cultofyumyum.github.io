@@ -24,7 +24,7 @@ export const personalInfo = {
 export const experience = [
   {
     company: "Uber",
-    role: "Product Operations Manager",
+    role: "Strategy & Operations Manager",
     period: "2020 - Present",
     description: "Oversee and develop Customer Support Operational processes for US&C Transit Organizations, totaling over $200M ARR.",
     achievements: [
