@@ -4,14 +4,22 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Professional Portfolio | Resume & CV</title>
-    <script type="module" crossorigin src="./assets/index-DOYffveO.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-BcN4-9sU.css">
+    <script type="module" crossorigin src="/assets/index-C54MDMY6.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/markdown-IOCaJBzY.js">
+    <link rel="stylesheet" crossorigin href="/assets/index-m7r_8ZpN.css">
   </head>
   <body>
     <div id="root">
       <div style="font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; color: #666;">
-        Loading your portfolio from the root...
+        Loading your portfolio...
       </div>
-    </div>
+    </div>
+    <script>
+      window.addEventListener('error', function(e) {
+        if (e.target.tagName === 'SCRIPT') {
+          console.error('Script load error:', e.target.src);
+        }
+      }, true);
+    </script>
   </body>
 </html>

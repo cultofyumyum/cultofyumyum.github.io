@@ -2,6 +2,7 @@ import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import Layout from './components/Layout';
 import About from './pages/About';
 import Resume from './pages/Resume';
+import Music from './pages/Music';
 import Portfolio from './pages/Portfolio';
 import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
@@ -19,6 +20,7 @@ export default function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<About />} />
           <Route path="resume" element={<Resume />} />
+          <Route path="music" element={<Music />} />
           <Route path="portfolio" element={<Portfolio />} />
           <Route path="blog" element={<Blog />} />
           <Route path="blog/:slug" element={<BlogPost />} />
