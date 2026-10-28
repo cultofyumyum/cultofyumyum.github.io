@@ -1,5 +1,5 @@
-import { useState, useEffect, useMemo } from 'react';
-import { Disc3, Clock, Star, Calendar as CalendarIcon, RefreshCw, ExternalLink, Sparkles, TrendingUp, Music } from 'lucide-react';
+import { useState, useEffect, useMemo, useRef } from 'react';
+import { Disc3, Clock, Star, Calendar as CalendarIcon, RefreshCw, ExternalLink, Sparkles, Music } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import fallback2026 from '../data/music/albums2026.json';
 import { cn } from '../lib/utils';
@@ -34,6 +34,49 @@ const MONTH_NAMES = [
 ];
 
 const SHORT_DAYS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+
+interface AlbumMetadata {
+  artworkUrl: string | null;
+  appleMusicAlbumUrl?: string;
+  appleMusicArtistUrl?: string;
+}
+
+const ARTWORK_STORAGE_KEY = 'music_calendar_album_meta_v1';
+
+function loadCachedMetadata(): Record<string, AlbumMetadata> {
+  try {
+    const raw = localStorage.getItem(ARTWORK_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch {
+    return {};
+  }
+}
+
+function saveCachedMetadata(cache: Record<string, AlbumMetadata>) {
+  try {
+    localStorage.setItem(ARTWORK_STORAGE_KEY, JSON.stringify(cache));
+  } catch {
+    // Ignore storage quota errors
+  }
+}
+
+function getAlbumCacheKey(artist: string, album: string): string {
+  return `${artist.trim().toLowerCase()}::${album.trim().toLowerCase()}`;
+}
+
+function getExternalLinks(artist: string, album: string, meta?: AlbumMetadata) {
+  const cleanArtist = artist.trim();
+  const cleanAlbum = album.trim();
+  return {
+    rymAlbum: `https://rateyourmusic.com/search?searchterm=${encodeURIComponent(`${cleanArtist} ${cleanAlbum}`)}&searchtype=l`,
+    rymArtist: `https://rateyourmusic.com/search?searchterm=${encodeURIComponent(cleanArtist)}&searchtype=a`,
+    wikiAlbum: `https://en.wikipedia.org/w/index.php?search=${encodeURIComponent(`${cleanAlbum} ${cleanArtist} album`)}`,
+    wikiArtist: `https://en.wikipedia.org/w/index.php?search=${encodeURIComponent(`${cleanArtist} musician`)}`,
+    lastFmAlbum: `https://www.last.fm/music/${encodeURIComponent(cleanArtist)}/${encodeURIComponent(cleanAlbum)}`,
+    discogsAlbum: `https://www.discogs.com/search/?q=${encodeURIComponent(`${cleanArtist} ${cleanAlbum}`)}&type=master`,
+    appleMusicAlbum: meta?.appleMusicAlbumUrl || `https://music.apple.com/us/search?term=${encodeURIComponent(`${cleanArtist} ${cleanAlbum}`)}`,
+  };
+}
 
 /**
  * Simple CSV line parser that respects quoted fields
@@ -159,6 +202,26 @@ export default function MusicCalendar() {
   const [isLiveSynced, setIsLiveSynced] = useState<boolean>(false);
   const [hoveredKey, setHoveredKey] = useState<string | null>(null);
   const [hideEmptyMonths, setHideEmptyMonths] = useState<boolean>(false);
+  const [albumMetaMap, setAlbumMetaMap] = useState<Record<string, AlbumMetadata>>(() => loadCachedMetadata());
+  const [loadingArtKey, setLoadingArtKey] = useState<string | null>(null);
+  const closeTimeoutRef = useRef<number | null>(null);
+
+  const handleOpenDay = (key: string) => {
+    if (closeTimeoutRef.current !== null) {
+      window.clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
+    setHoveredKey(key);
+  };
+
+  const handleScheduleClose = (key: string) => {
+    if (closeTimeoutRef.current !== null) {
+      window.clearTimeout(closeTimeoutRef.current);
+    }
+    closeTimeoutRef.current = window.setTimeout(() => {
+      setHoveredKey(prev => (prev === key ? null : prev));
+    }, 140);
+  };
 
   useEffect(() => {
     let isCancelled = false;
@@ -208,6 +271,83 @@ export default function MusicCalendar() {
     }
     return map;
   }, [entries]);
+
+  // Fetch album artwork & Apple Music links on hover (cached in localStorage)
+  useEffect(() => {
+    if (!hoveredKey) return;
+    const entry = entryMap.get(hoveredKey);
+    if (!entry || !entry.album) return;
+
+    const cacheKey = getAlbumCacheKey(entry.artist, entry.album);
+    if (cacheKey in albumMetaMap) return;
+
+    let cancelled = false;
+    setLoadingArtKey(cacheKey);
+
+    async function fetchAlbumArt() {
+      try {
+        const query = `${entry!.artist} ${entry!.album}`.trim();
+        const url = `https://itunes.apple.com/search?term=${encodeURIComponent(query)}&entity=album&limit=5`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('iTunes search failed');
+        const data = await res.json();
+        const results: Array<{
+          collectionName?: string;
+          artistName?: string;
+          artworkUrl100?: string;
+          collectionViewUrl?: string;
+          artistViewUrl?: string;
+        }> = data?.results || [];
+
+        const targetAlbum = entry!.album.trim().toLowerCase();
+        const targetArtist = entry!.artist.trim().toLowerCase();
+
+        // Prefer result matching artist or album name closely, fallback to first result
+        const bestMatch =
+          results.find(
+            r =>
+              r.collectionName?.toLowerCase().includes(targetAlbum) ||
+              targetAlbum.includes(r.collectionName?.toLowerCase() || '___')
+          ) ||
+          results.find(r => r.artistName?.toLowerCase().includes(targetArtist)) ||
+          results[0];
+
+        const hiResArt = bestMatch?.artworkUrl100
+          ? bestMatch.artworkUrl100.replace('100x100bb', '300x300bb')
+          : null;
+
+        const meta: AlbumMetadata = {
+          artworkUrl: hiResArt,
+          appleMusicAlbumUrl: bestMatch?.collectionViewUrl,
+          appleMusicArtistUrl: bestMatch?.artistViewUrl,
+        };
+
+        if (!cancelled) {
+          setAlbumMetaMap(prev => {
+            const next = { ...prev, [cacheKey]: meta };
+            saveCachedMetadata(next);
+            return next;
+          });
+        }
+      } catch {
+        if (!cancelled) {
+          setAlbumMetaMap(prev => ({
+            ...prev,
+            [cacheKey]: { artworkUrl: null },
+          }));
+        }
+      } finally {
+        if (!cancelled) {
+          setLoadingArtKey(prev => (prev === cacheKey ? null : prev));
+        }
+      }
+    }
+
+    fetchAlbumArt();
+    return () => {
+      cancelled = true;
+    };
+  }, [hoveredKey, entryMap, albumMetaMap]);
 
   // Summary statistics
   const stats = useMemo(() => {
@@ -443,16 +583,24 @@ export default function MusicCalendar() {
                     const entry = entryMap.get(key);
                     const hasAlbum = Boolean(entry && entry.album);
                     const isHovered = hoveredKey === key;
+                    const cacheKey = entry && hasAlbum ? getAlbumCacheKey(entry.artist, entry.album) : '';
+                    const albumMeta = cacheKey ? albumMetaMap[cacheKey] : undefined;
+                    const isLoadingArt = cacheKey !== '' && loadingArtKey === cacheKey;
+                    const links = entry && hasAlbum ? getExternalLinks(entry.artist, entry.album, albumMeta) : null;
 
                     return (
                       <div
                         key={key}
                         className="relative"
-                        onMouseEnter={() => hasAlbum && setHoveredKey(key)}
-                        onMouseLeave={() => setHoveredKey(prev => (prev === key ? null : prev))}
+                        onMouseEnter={() => hasAlbum && handleOpenDay(key)}
+                        onMouseLeave={() => hasAlbum && handleScheduleClose(key)}
                         onClick={() => {
                           if (hasAlbum) {
-                            setHoveredKey(prev => (prev === key ? null : key));
+                            if (hoveredKey === key) {
+                              setHoveredKey(null);
+                            } else {
+                              handleOpenDay(key);
+                            }
                           }
                         }}
                       >
@@ -471,15 +619,18 @@ export default function MusicCalendar() {
 
                         {/* Hover Popup */}
                         <AnimatePresence>
-                          {isHovered && entry && hasAlbum && (
+                          {isHovered && entry && hasAlbum && links && (
                             <motion.div
                               initial={{ opacity: 0, y: 6, scale: 0.95 }}
                               animate={{ opacity: 1, y: 0, scale: 1 }}
                               exit={{ opacity: 0, y: 4, scale: 0.95 }}
                               transition={{ duration: 0.15 }}
-                              className="absolute z-50 bottom-full left-1/2 -translate-x-1/2 mb-2.5 w-64 p-4 rounded-2xl bg-slate-900 text-white shadow-2xl border border-slate-700/80 pointer-events-none"
+                              onMouseEnter={() => handleOpenDay(key)}
+                              onMouseLeave={() => handleScheduleClose(key)}
+                              onClick={e => e.stopPropagation()}
+                              className="absolute z-50 bottom-full left-1/2 -translate-x-1/2 mb-2.5 w-80 p-4 rounded-2xl bg-slate-900 text-white shadow-2xl border border-slate-700/80 after:content-[''] after:absolute after:top-full after:inset-x-0 after:h-3"
                             >
-                              <div className="flex items-center justify-between text-[11px] font-semibold text-slate-400 mb-1.5">
+                              <div className="flex items-center justify-between text-[11px] font-semibold text-slate-400 mb-2.5">
                                 <span className="flex items-center gap-1">
                                   <CalendarIcon className="w-3 h-3 text-brand-400" />
                                   {monthName} {day}, {selectedYear}
@@ -492,15 +643,46 @@ export default function MusicCalendar() {
                                 )}
                               </div>
 
-                              <div className="space-y-1">
-                                <p className="font-bold text-sm text-white leading-snug">
-                                  {entry.album}
-                                </p>
-                                <p className="text-xs font-medium text-brand-300">
-                                  {entry.artist}
-                                </p>
+                              {/* Album Art + Details */}
+                              <div className="flex items-start gap-3.5">
+                                <div className="w-16 h-16 rounded-xl bg-slate-800 border border-slate-700/80 overflow-hidden shrink-0 flex items-center justify-center relative shadow-md">
+                                  {albumMeta?.artworkUrl ? (
+                                    <img
+                                      src={albumMeta.artworkUrl}
+                                      alt={`${entry.album} cover`}
+                                      className="w-full h-full object-cover"
+                                      loading="lazy"
+                                    />
+                                  ) : isLoadingArt ? (
+                                    <Disc3 className="w-6 h-6 text-brand-400 animate-spin" />
+                                  ) : (
+                                    <Disc3 className="w-6 h-6 text-slate-600" />
+                                  )}
+                                </div>
+
+                                <div className="min-w-0 flex-1 space-y-1">
+                                  <a
+                                    href={links.rymAlbum}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="block font-bold text-sm text-white leading-snug hover:text-brand-300 transition-colors line-clamp-2"
+                                    title={`Search "${entry.album}" on RateYourMusic`}
+                                  >
+                                    {entry.album}
+                                  </a>
+                                  <a
+                                    href={links.wikiArtist}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="block text-xs font-medium text-brand-300 hover:text-brand-200 hover:underline transition-colors truncate"
+                                    title={`Look up ${entry.artist} on Wikipedia`}
+                                  >
+                                    {entry.artist}
+                                  </a>
+                                </div>
                               </div>
 
+                              {/* Rating Bar */}
                               {entry.rating !== null && (
                                 <div className="mt-3 pt-2.5 border-t border-slate-800 flex items-center justify-between">
                                   {renderStars(entry.rating)}
@@ -509,6 +691,65 @@ export default function MusicCalendar() {
                                   </span>
                                 </div>
                               )}
+
+                              {/* Quick-Link Service Pills */}
+                              <div className="mt-2.5 pt-2.5 border-t border-slate-800/90 flex items-center justify-between gap-1.5">
+                                <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">
+                                  Links
+                                </span>
+                                <div className="flex flex-wrap items-center gap-1">
+                                  <a
+                                    href={links.rymAlbum}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-800 hover:bg-brand-600 text-[10px] font-bold text-slate-300 hover:text-white border border-slate-700/80 hover:border-brand-500 transition-colors"
+                                    title="Search Album on RateYourMusic"
+                                  >
+                                    RYM
+                                    <ExternalLink className="w-2.5 h-2.5 opacity-75" />
+                                  </a>
+                                  <a
+                                    href={links.wikiAlbum}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-800 hover:bg-brand-600 text-[10px] font-bold text-slate-300 hover:text-white border border-slate-700/80 hover:border-brand-500 transition-colors"
+                                    title="Look up Album on Wikipedia"
+                                  >
+                                    Wiki
+                                    <ExternalLink className="w-2.5 h-2.5 opacity-75" />
+                                  </a>
+                                  <a
+                                    href={links.discogsAlbum}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-800 hover:bg-brand-600 text-[10px] font-bold text-slate-300 hover:text-white border border-slate-700/80 hover:border-brand-500 transition-colors"
+                                    title="Search Album on Discogs"
+                                  >
+                                    Discogs
+                                    <ExternalLink className="w-2.5 h-2.5 opacity-75" />
+                                  </a>
+                                  <a
+                                    href={links.lastFmAlbum}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-800 hover:bg-brand-600 text-[10px] font-bold text-slate-300 hover:text-white border border-slate-700/80 hover:border-brand-500 transition-colors"
+                                    title="View on Last.fm"
+                                  >
+                                    Last.fm
+                                    <ExternalLink className="w-2.5 h-2.5 opacity-75" />
+                                  </a>
+                                  <a
+                                    href={links.appleMusicAlbum}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-800 hover:bg-brand-600 text-[10px] font-bold text-slate-300 hover:text-white border border-slate-700/80 hover:border-brand-500 transition-colors"
+                                    title="View on Apple Music"
+                                  >
+                                    Apple
+                                    <ExternalLink className="w-2.5 h-2.5 opacity-75" />
+                                  </a>
+                                </div>
+                              </div>
 
                               {/* Tooltip Caret */}
                               <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-6 border-transparent border-t-slate-900" />
