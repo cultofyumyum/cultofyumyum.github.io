@@ -1,44 +1,99 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Outfit:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Outfit", sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-sans: "Verdana", "Geneva", "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-display: "Georgia", "Newsreader", "Times New Roman", serif;
+  --font-mono: "IBM Plex Mono", "Courier New", Courier, monospace;
   
-  --color-brand-50: #f0f7ff;
-  --color-brand-100: #e0effe;
-  --color-brand-200: #bae0fd;
-  --color-brand-300: #7cc8fb;
-  --color-brand-400: #38abf8;
-  --color-brand-500: #0e91e9;
-  --color-brand-600: #0274c7;
-  --color-brand-700: #035ca1;
-  --color-brand-800: #074e85;
-  --color-brand-900: #0c426e;
-  --color-brand-950: #082a4a;
+  --color-brand-50: #eff5f0;
+  --color-brand-100: #d9e9dc;
+  --color-brand-200: #b5d4bc;
+  --color-brand-300: #86b793;
+  --color-brand-400: #569568;
+  --color-brand-500: #37794b;
+  --color-brand-600: #28603a;
+  --color-brand-700: #214d30;
+  --color-brand-800: #1c3e27;
+  --color-brand-900: #173321;
+  --color-brand-950: #0b1c12;
+
+  --color-transit-red: #d32f2f;
+  --color-transit-blue: #1976d2;
+  --color-transit-green: #2e7d32;
+  --color-transit-amber: #f57c00;
+
+  --color-paper: #f6f4ee;
+  --color-paper-card: #fcfbf8;
+  --color-paper-muted: #edeae0;
+  --color-ink: #1a1c19;
+  --color-ink-muted: #52564f;
+  --color-rule: #c8c4b7;
+  --color-rule-dark: #2c352d;
 }
 
 @layer base {
   body {
-    @apply antialiased text-slate-900 bg-[#fafafa];
+    @apply antialiased text-[#1a1c19] bg-[#f6f4ee] font-sans text-[13px] sm:text-[14px] leading-relaxed selection:bg-[#1c3e27] selection:text-[#fcfbf8];
   }
   
   h1, h2, h3, h4, h5, h6 {
-    @apply font-display tracking-tight;
+    @apply font-display tracking-tight text-[#1a1c19];
+  }
+
+  /* Authentic Web 1.0 underline hyperlinks */
+  a:not([class*="no-underline"]) {
+    text-decoration-skip-ink: auto;
   }
 }
 
 @layer utilities {
-  .glass {
-    @apply bg-white/70 backdrop-blur-xl border border-white/20 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)];
-  }
-  
-  .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-brand-600 to-indigo-600;
+  .retro-box {
+    @apply bg-[#fcfbf8] border-2 border-[#2c352d] shadow-[3px_3px_0px_0px_#2c352d];
   }
 
-  .card-hover {
-    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-brand-500/10;
+  .retro-box-sm {
+    @apply bg-[#fcfbf8] border border-[#2c352d] shadow-[2px_2px_0px_0px_#2c352d];
+  }
+
+  .retro-box-inset {
+    @apply bg-[#edeae0] border border-[#2c352d] shadow-[inset_1px_1px_3px_rgba(0,0,0,0.15)];
+  }
+
+  .retro-btn {
+    @apply bg-[#fcfbf8] border-2 border-[#2c352d] shadow-[2px_2px_0px_0px_#2c352d] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all;
+  }
+
+  .retro-btn-sm {
+    @apply bg-[#fcfbf8] border border-[#2c352d] shadow-[1px_1px_0px_0px_#2c352d] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all;
+  }
+
+  .retro-btn-primary {
+    @apply bg-brand-800 text-[#fcfbf8] border-2 border-[#173321] shadow-[2px_2px_0px_0px_#173321] hover:bg-brand-900 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all;
+  }
+
+  .retro-titlebar {
+    @apply bg-[#1c3e27] text-[#fcfbf8] px-3 py-1.5 border-b-2 border-[#2c352d] font-mono text-xs font-bold flex items-center justify-between tracking-wider;
+  }
+
+  .retro-dotted-hr {
+    border: none;
+    border-top: 2px dotted #2c352d;
+    margin: 1.5rem 0;
+  }
+
+  .retro-double-hr {
+    border: none;
+    border-top: 3px double #2c352d;
+    margin: 1.5rem 0;
+  }
+
+  /* 35mm Film Contact Sheet Aesthetic */
+  .film-frame {
+    @apply bg-[#121212] p-2 border-2 border-[#242424] text-[#a0a0a0] font-mono text-[10px];
+  }
+
+  .film-sprocket {
+    background: radial-gradient(circle, transparent 35%, #181818 36%);
   }
 }

@@ -1,5 +1,4 @@
 import { Link, useLocation } from 'react-router-dom';
-import { motion } from 'motion/react';
 import { navigation, personalInfo } from '../data/content';
 import { cn } from '../lib/utils';
 
@@ -7,46 +6,63 @@ export default function Navbar() {
   const location = useLocation();
 
   return (
-    <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-3xl">
-      <div className="glass rounded-2xl px-6 py-3 flex items-center justify-between">
-        <Link to="/" className="text-lg font-bold tracking-tighter text-slate-900 flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-indigo-600 flex items-center justify-center text-white text-sm">
-            {personalInfo.name.charAt(0)}
+    <header className="border-b-2 border-[#2c352d] bg-[#f6f4ee] sticky top-0 z-50">
+      {/* Top System Ticker */}
+      <div className="bg-[#1c3e27] text-[#fcfbf8] font-mono text-[11px] px-4 sm:px-6 py-1 border-b border-[#2c352d]">
+        <div className="max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="font-bold tracking-wider">HTTP://CULTOFYUMYUM.GITHUB.IO</span>
           </div>
-          <span className="hidden sm:block">{personalInfo.name}</span>
-        </Link>
-        
-        <div className="flex items-center gap-1 sm:gap-4">
-          {navigation.map((item) => {
-            const isActive = location.pathname === item.href || 
-                           (item.href !== '/' && location.pathname.startsWith(item.href));
-            const Icon = item.icon;
-            
-            return (
-              <Link
-                key={item.name}
-                to={item.href}
-                className={cn(
-                  "px-3 py-1.5 rounded-xl text-sm font-medium transition-all relative flex items-center gap-2",
-                  isActive 
-                    ? "text-brand-600 bg-brand-50" 
-                    : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
-                )}
-              >
-                <Icon className="w-4 h-4" />
-                <span className="hidden md:block">{item.name}</span>
-                {isActive && (
-                  <motion.div
-                    layoutId="nav-pill"
-                    className="absolute inset-0 bg-brand-50 rounded-xl -z-10"
-                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                  />
-                )}
-              </Link>
-            );
-          })}
+          <div className="hidden sm:flex items-center gap-4 text-emerald-200/80">
+            <span>DENVER_CO // 39.7392° N, 104.9903° W</span>
+            <span>·</span>
+            <span>SPEC: TRANSIT &amp; OPS</span>
+          </div>
         </div>
       </div>
-    </nav>
+
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          {/* Brand & Identity */}
+          <div className="flex items-baseline gap-3">
+            <Link
+              to="/"
+              className="font-mono font-bold text-lg tracking-tight text-[#1a1c19] hover:text-brand-800 transition-colors"
+            >
+              ryan-conn<span className="text-brand-700">.html</span>
+            </Link>
+            <span className="font-mono text-xs text-[#52564f] hidden md:inline">
+              // {personalInfo.title}
+            </span>
+          </div>
+
+          {/* Nav Links */}
+          <nav className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+            {navigation.map((item, index) => {
+              const isActive =
+                location.pathname === item.href ||
+                (item.href !== '/' && location.pathname.startsWith(item.href));
+
+              return (
+                <Link
+                  key={item.name}
+                  to={item.href}
+                  className={cn(
+                    "font-mono text-xs sm:text-sm px-2.5 py-1 border-2 transition-all",
+                    isActive
+                      ? "bg-brand-800 text-[#fcfbf8] border-[#173321] font-bold shadow-[2px_2px_0px_0px_#173321]"
+                      : "bg-[#fcfbf8] text-[#1a1c19] border-[#2c352d] hover:bg-[#edeae0] shadow-[1px_1px_0px_0px_#2c352d]"
+                  )}
+                >
+                  <span className="text-brand-600 mr-1 font-bold">0{index + 1}:</span>
+                  {isActive ? `[${item.name.toLowerCase()}]` : item.name.toLowerCase()}
+                </Link>
+              );
+            })}
+          </nav>
+        </div>
+      </div>
+    </header>
   );
 }

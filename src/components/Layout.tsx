@@ -1,47 +1,69 @@
-import { Outlet, useLocation, Link } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import Navbar from './Navbar';
-import { motion, AnimatePresence } from 'motion/react';
 import { personalInfo } from '../data/content';
 
 export default function Layout() {
   const location = useLocation();
 
   return (
-    <div className="min-h-screen bg-[#fafafa] font-sans text-slate-900 selection:bg-brand-100 selection:text-brand-900">
-      {/* Background blobs for modern feel */}
-      <div className="fixed inset-0 -z-10 overflow-hidden">
-        <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] rounded-full bg-brand-200/20 blur-[120px]" />
-        <div className="absolute top-[20%] -right-[10%] w-[30%] h-[30%] rounded-full bg-indigo-200/20 blur-[100px]" />
-        <div className="absolute -bottom-[10%] left-[20%] w-[35%] h-[35%] rounded-full bg-emerald-200/10 blur-[110px]" />
+    <div className="min-h-screen flex flex-col bg-[#f6f4ee] text-[#1a1c19] font-sans">
+      <Navbar />
+
+      <main key={location.pathname} className="flex-1 py-8 sm:py-12 px-4 sm:px-6 max-w-5xl w-full mx-auto">
+        <Outlet />
+      </main>
+
+      {/* Retro Transit Color Band */}
+      <div className="w-full h-1.5 flex">
+        <div className="flex-1 bg-[#d32f2f]" title="Red Line" />
+        <div className="flex-1 bg-[#1976d2]" title="Blue Line" />
+        <div className="flex-1 bg-[#2e7d32]" title="Green Line" />
+        <div className="flex-1 bg-[#f57c00]" title="Orange Line" />
       </div>
 
-      <Navbar />
-      
-      <main className="pt-32 pb-24 px-6 max-w-4xl mx-auto">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={location.pathname}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ 
-              type: "spring",
-              stiffness: 260,
-              damping: 20 
-            }}
-          >
-            <Outlet />
-          </motion.div>
-        </AnimatePresence>
-      </main>
-      
-      <footer className="py-12 border-t border-slate-200/60">
-        <div className="max-w-4xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6 text-slate-400 text-sm">
-          <p>© {new Date().getFullYear()} {personalInfo.name}. All rights reserved.</p>
-          <div className="flex gap-6">
-            {personalInfo.socials.map(s => (
-              <a key={s.name} href={s.url} className="hover:text-brand-600 transition-colors">{s.name}</a>
-            ))}
+      <footer className="border-t-2 border-[#2c352d] bg-[#edeae0] py-8">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 space-y-6 font-mono text-xs text-[#52564f]">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-[#c8c4b7] pb-6">
+            <div className="space-y-1">
+              <p className="text-[#1a1c19] font-bold text-sm">
+                {personalInfo.name} — {personalInfo.title}
+              </p>
+              <p>
+                Denver, Colorado · GIS &amp; Transit SaaS Operations · Est. 2013
+              </p>
+            </div>
+
+            {/* Retro Web Badges */}
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="px-2 py-0.5 border border-[#2c352d] bg-[#fcfbf8] text-[#1a1c19] font-bold text-[10px]">
+                BEST VIEWED IN ANY BROWSER
+              </span>
+              <span className="px-2 py-0.5 border border-[#2c352d] bg-[#1c3e27] text-[#fcfbf8] font-bold text-[10px]">
+                HOSTED ON GH-PAGES
+              </span>
+              <span className="px-2 py-0.5 border border-[#2c352d] bg-[#fcfbf8] text-brand-800 font-bold text-[10px]">
+                35MM // HI-FI AUDIO
+              </span>
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <p className="text-[11px]">
+              Built with plain HTML sensibilities &amp; Tailwind. © {new Date().getFullYear()} {personalInfo.name}.
+            </p>
+            <div className="flex flex-wrap items-center gap-4">
+              {personalInfo.socials.map((s) => (
+                <a
+                  key={s.name}
+                  href={s.url}
+                  target={s.url.startsWith('mailto:') ? undefined : '_blank'}
+                  rel={s.url.startsWith('mailto:') ? undefined : 'noopener noreferrer'}
+                  className="text-[#1a1c19] font-bold underline decoration-[#2c352d] underline-offset-4 hover:text-brand-800 transition-colors"
+                >
+                  [{s.name.toLowerCase()}]
+                </a>
+              ))}
+            </div>
           </div>
         </div>
       </footer>

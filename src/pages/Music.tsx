@@ -156,24 +156,24 @@ function parseSheetCSV(csvText: string): AlbumEntry[] {
 
 function getRatingColorClasses(rating: number | null, hasAlbum: boolean): string {
   if (!hasAlbum) {
-    return 'bg-slate-50 text-slate-400 border-slate-100 hover:border-slate-200';
+    return 'bg-[#edeae0] text-[#a19d91] border-[#d8d4c7] hover:border-[#2c352d]';
   }
   if (rating === null) {
-    return 'bg-brand-100 text-brand-900 border-brand-200 hover:bg-brand-200';
+    return 'bg-[#d9e9dc] text-[#1c3e27] border-[#86b793] hover:border-[#1c3e27]';
   }
   if (rating >= 4.0) {
-    return 'bg-gradient-to-br from-brand-600 to-indigo-600 text-white border-transparent shadow-sm shadow-brand-500/20';
+    return 'bg-[#1c3e27] text-[#fcfbf8] border-[#0b1c12] shadow-[1px_1px_0px_0px_#0b1c12] font-bold';
   }
   if (rating >= 3.5) {
-    return 'bg-brand-500 text-white border-transparent shadow-sm shadow-brand-500/10';
+    return 'bg-[#37794b] text-[#fcfbf8] border-[#1c3e27] font-bold';
   }
   if (rating >= 3.0) {
-    return 'bg-brand-200 text-brand-900 border-brand-300';
+    return 'bg-[#86b793] text-[#0b1c12] border-[#37794b] font-semibold';
   }
   if (rating >= 2.5) {
-    return 'bg-indigo-100 text-indigo-800 border-indigo-200';
+    return 'bg-[#d9e9dc] text-[#1c3e27] border-[#86b793]';
   }
-  return 'bg-slate-200 text-slate-700 border-slate-300';
+  return 'bg-[#e8d8cc] text-[#6b3518] border-[#b08b73]';
 }
 
 function renderStars(rating: number) {
@@ -382,143 +382,151 @@ export default function MusicCalendar() {
   const yearNum = parseInt(selectedYear, 10);
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-10">
       {/* Header & Controls */}
-      <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div className="space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 border border-brand-100 text-brand-600 text-xs font-semibold uppercase tracking-wider">
-            <Disc3 className="w-3.5 h-3.5 animate-spin" style={{ animationDuration: '8s' }} />
-            An Album A Day
+      <header className="retro-box overflow-hidden">
+        <div className="retro-titlebar">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-emerald-400" />
+            <span>AUDIO_CATALOG // 365_ALBUMS_A_YEAR.CSV</span>
           </div>
-          <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight">
-            Daily Listening Log
-          </h1>
-          <p className="text-lg text-slate-500 max-w-xl">
-            Tracking my goal of listening to one full album every day. Hover over any highlighted day on the calendar to see that day's album, duration, and rating.
-          </p>
+          <span className="hidden sm:inline">LIVE SYNC ENABLED</span>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
-          {/* Year Selector */}
-          <div className="flex items-center bg-white p-1.5 rounded-2xl border border-slate-200 shadow-sm">
-            {Object.keys(YEAR_TABS).sort((a, b) => Number(b) - Number(a)).map(yr => (
-              <button
-                key={yr}
-                onClick={() => setSelectedYear(yr)}
-                className={cn(
-                  "px-3.5 py-1.5 rounded-xl text-sm font-bold transition-all cursor-pointer",
-                  selectedYear === yr
-                    ? "bg-brand-600 text-white shadow-sm"
-                    : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
-                )}
+        <div className="p-6 sm:p-8 space-y-6">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b-2 border-[#2c352d] pb-6">
+            <div className="space-y-2">
+              <div className="font-mono text-xs uppercase tracking-widest text-brand-800 font-bold flex items-center gap-2">
+                <Disc3 className="w-3.5 h-3.5 animate-spin" style={{ animationDuration: '8s' }} />
+                <span>DAILY LISTENING TELEMETRY // {selectedYear}</span>
+              </div>
+              <h1 className="text-4xl sm:text-5xl font-bold text-[#1a1c19] leading-tight">
+                An Album A Day
+              </h1>
+              <p className="font-display italic text-xl sm:text-2xl text-[#52564f]">
+                One full album listened to and evaluated every day. Hover over any active day to inspect album details.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2 shrink-0">
+              {/* Year Selector */}
+              <div className="flex flex-wrap items-center gap-1.5 font-mono text-xs">
+                {Object.keys(YEAR_TABS).sort((a, b) => Number(b) - Number(a)).map(yr => (
+                  <button
+                    key={yr}
+                    onClick={() => setSelectedYear(yr)}
+                    className={cn(
+                      "px-3 py-1.5 font-bold transition-all cursor-pointer border-2",
+                      selectedYear === yr
+                        ? "bg-brand-800 text-[#fcfbf8] border-[#173321] shadow-[2px_2px_0px_0px_#173321]"
+                        : "bg-[#fcfbf8] text-[#1a1c19] border-[#2c352d] hover:bg-[#edeae0] shadow-[1px_1px_0px_0px_#2c352d]"
+                    )}
+                  >
+                    {yr}
+                  </button>
+                ))}
+              </div>
+
+              <a
+                href={`https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/edit#gid=${YEAR_TABS[selectedYear]?.gid || '0'}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="retro-btn-sm font-mono text-xs px-3 py-1.5 inline-flex items-center gap-1.5 text-[#1a1c19] hover:bg-[#edeae0] font-bold"
+                title="View Source Google Sheet"
               >
-                {yr}
-              </button>
-            ))}
+                <ExternalLink className="w-3 h-3 text-brand-800" />
+                <span>Source Sheet</span>
+              </a>
+            </div>
           </div>
 
-          <a
-            href={`https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/edit#gid=${YEAR_TABS[selectedYear]?.gid || '0'}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-2xl bg-white border border-slate-200 text-slate-600 hover:text-brand-600 hover:border-brand-200 text-xs font-semibold shadow-sm transition-all"
-            title="View Source Google Sheet"
-          >
-            <ExternalLink className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Source Sheet</span>
-          </a>
+          {/* Stats Bar */}
+          <section className="grid grid-cols-2 sm:grid-cols-4 gap-3 font-mono text-xs">
+            <div className="p-3 bg-[#edeae0] border border-[#2c352d] flex items-center gap-3">
+              <Music className="w-5 h-5 text-brand-800 shrink-0" />
+              <div>
+                <p className="text-[10px] font-bold text-[#52564f] uppercase tracking-wider">Albums Logged</p>
+                <p className="text-xl font-bold text-[#1a1c19]">{stats.totalAlbums}</p>
+              </div>
+            </div>
+
+            <div className="p-3 bg-[#edeae0] border border-[#2c352d] flex items-center gap-3">
+              <Clock className="w-5 h-5 text-brand-800 shrink-0" />
+              <div>
+                <p className="text-[10px] font-bold text-[#52564f] uppercase tracking-wider">Listening Time</p>
+                <p className="text-xl font-bold text-[#1a1c19]">{stats.listeningTime}</p>
+              </div>
+            </div>
+
+            <div className="p-3 bg-[#edeae0] border border-[#2c352d] flex items-center gap-3">
+              <Star className="w-5 h-5 text-amber-600 fill-amber-500 shrink-0" />
+              <div>
+                <p className="text-[10px] font-bold text-[#52564f] uppercase tracking-wider">Avg Rating</p>
+                <p className="text-xl font-bold text-[#1a1c19]">{stats.avgRating} <span className="text-xs font-normal text-[#52564f]">/ 5</span></p>
+              </div>
+            </div>
+
+            <div className="p-3 bg-[#edeae0] border border-[#2c352d] flex items-center gap-3">
+              <Sparkles className="w-5 h-5 text-brand-800 shrink-0" />
+              <div>
+                <p className="text-[10px] font-bold text-[#52564f] uppercase tracking-wider">4.0+ Favorites</p>
+                <p className="text-xl font-bold text-[#1a1c19]">{stats.topRatedCount}</p>
+              </div>
+            </div>
+          </section>
         </div>
       </header>
 
-      {/* Stats Bar */}
-      <section className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm flex items-center gap-4">
-          <div className="p-3 rounded-2xl bg-brand-50 text-brand-600">
-            <Music className="w-5 h-5" />
-          </div>
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">Albums Logged</p>
-            <p className="text-2xl font-extrabold text-slate-900">{stats.totalAlbums}</p>
-          </div>
-        </div>
-
-        <div className="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm flex items-center gap-4">
-          <div className="p-3 rounded-2xl bg-indigo-50 text-indigo-600">
-            <Clock className="w-5 h-5" />
-          </div>
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">Listening Time</p>
-            <p className="text-2xl font-extrabold text-slate-900">{stats.listeningTime}</p>
-          </div>
-        </div>
-
-        <div className="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm flex items-center gap-4">
-          <div className="p-3 rounded-2xl bg-amber-50 text-amber-500">
-            <Star className="w-5 h-5 fill-amber-400" />
-          </div>
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">Avg Rating</p>
-            <p className="text-2xl font-extrabold text-slate-900">{stats.avgRating} <span className="text-sm font-normal text-slate-400">/ 5</span></p>
-          </div>
-        </div>
-
-        <div className="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm flex items-center gap-4">
-          <div className="p-3 rounded-2xl bg-emerald-50 text-emerald-600">
-            <Sparkles className="w-5 h-5" />
-          </div>
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">4.0+ Favorites</p>
-            <p className="text-2xl font-extrabold text-slate-900">{stats.topRatedCount}</p>
-          </div>
-        </div>
-      </section>
-
       {/* Filter & Legend Controls */}
-      <div className="flex flex-wrap items-center justify-between gap-4 bg-white px-6 py-3.5 rounded-2xl border border-slate-100 shadow-sm text-xs text-slate-500">
+      <div className="retro-box p-4 flex flex-wrap items-center justify-between gap-4 font-mono text-xs text-[#52564f]">
         <div className="flex flex-wrap items-center gap-3">
-          <span className="font-semibold text-slate-700">Rating Legend:</span>
+          <span className="font-bold text-[#1a1c19]">RATING KEY:</span>
           <span className="inline-flex items-center gap-1.5">
-            <span className="w-3 h-3 rounded-md bg-gradient-to-br from-brand-600 to-indigo-600 inline-block" />
-            4.0+
+            <span className="w-3 h-3 border border-[#0b1c12] bg-[#1c3e27] inline-block" />
+            <span className="text-[#1a1c19] font-bold">4.0+</span>
           </span>
           <span className="inline-flex items-center gap-1.5">
-            <span className="w-3 h-3 rounded-md bg-brand-500 inline-block" />
-            3.5
+            <span className="w-3 h-3 border border-[#1c3e27] bg-[#37794b] inline-block" />
+            <span>3.5</span>
           </span>
           <span className="inline-flex items-center gap-1.5">
-            <span className="w-3 h-3 rounded-md bg-brand-200 inline-block" />
-            3.0
+            <span className="w-3 h-3 border border-[#37794b] bg-[#86b793] inline-block" />
+            <span>3.0</span>
           </span>
           <span className="inline-flex items-center gap-1.5">
-            <span className="w-3 h-3 rounded-md bg-indigo-100 inline-block" />
-            &lt; 3.0
+            <span className="w-3 h-3 border border-[#86b793] bg-[#d9e9dc] inline-block" />
+            <span>2.5</span>
           </span>
           <span className="inline-flex items-center gap-1.5">
-            <span className="w-3 h-3 rounded-md bg-slate-100 border border-slate-200 inline-block" />
-            Unlogged
+            <span className="w-3 h-3 border border-[#b08b73] bg-[#e8d8cc] inline-block" />
+            <span>&lt; 2.5</span>
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <span className="w-3 h-3 border border-[#d8d4c7] bg-[#edeae0] inline-block" />
+            <span>Unlogged</span>
           </span>
         </div>
 
         <div className="flex items-center gap-4">
-          <label className="inline-flex items-center gap-2 cursor-pointer select-none text-slate-600 hover:text-slate-900 font-medium">
+          <label className="inline-flex items-center gap-2 cursor-pointer select-none text-[#1a1c19] font-bold">
             <input
               type="checkbox"
               checked={hideEmptyMonths}
               onChange={e => setHideEmptyMonths(e.target.checked)}
-              className="rounded border-slate-300 text-brand-600 focus:ring-brand-500"
+              className="accent-[#1c3e27]"
             />
-            Only show months with logged albums
+            Only show logged months
           </label>
           {isLoading && (
-            <span className="inline-flex items-center gap-1 text-brand-600 font-medium">
+            <span className="inline-flex items-center gap-1 text-brand-800 font-bold">
               <RefreshCw className="w-3.5 h-3.5 animate-spin" />
               Syncing...
             </span>
           )}
           {!isLoading && isLiveSynced && (
-            <span className="inline-flex items-center gap-1.5 text-emerald-600 font-medium">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              Live from Google Sheets
+            <span className="inline-flex items-center gap-1.5 text-emerald-800 font-bold">
+              <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
+              Synced live
             </span>
           )}
         </div>
@@ -529,9 +537,8 @@ export default function MusicCalendar() {
         {MONTH_NAMES.map((monthName, monthIdx) => {
           const monthNum = monthIdx + 1;
           const daysInMonth = new Date(yearNum, monthNum, 0).getDate();
-          const firstDayOfWeek = new Date(yearNum, monthIdx, 1).getDay(); // 0 = Sun ... 6 = Sat
+          const firstDayOfWeek = new Date(yearNum, monthIdx, 1).getDay();
 
-          // Count albums logged in this month
           let monthAlbumCount = 0;
           for (let d = 1; d <= daysInMonth; d++) {
             const entry = entryMap.get(`${monthNum}/${d}`);
@@ -548,217 +555,204 @@ export default function MusicCalendar() {
           return (
             <div
               key={monthName}
-              className="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between"
+              className="retro-box overflow-hidden flex flex-col justify-between"
             >
               <div>
-                {/* Month Header */}
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-bold text-slate-900">{monthName}</h2>
+                {/* Month Titlebar */}
+                <div className="bg-[#2c352d] text-[#fcfbf8] font-mono text-xs px-3.5 py-2 font-bold flex items-center justify-between border-b border-[#2c352d]">
+                  <span className="tracking-wider">{monthName.toUpperCase()}</span>
                   {monthAlbumCount > 0 ? (
-                    <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-brand-50 text-brand-600">
-                      {monthAlbumCount} {monthAlbumCount === 1 ? 'album' : 'albums'}
+                    <span className="text-emerald-300 font-semibold text-[11px]">
+                      {monthAlbumCount} {monthAlbumCount === 1 ? 'ALBUM' : 'ALBUMS'}
                     </span>
                   ) : (
-                    <span className="text-xs font-medium text-slate-300">No entries</span>
+                    <span className="text-[#8e8e8e] font-normal text-[11px]">NO ENTRIES</span>
                   )}
                 </div>
 
-                {/* Weekday Headers */}
-                <div className="grid grid-cols-7 gap-1.5 mb-2 text-center">
-                  {SHORT_DAYS.map(day => (
-                    <div key={day} className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                      {day}
-                    </div>
-                  ))}
-                </div>
+                <div className="p-4">
+                  {/* Weekday Headers */}
+                  <div className="grid grid-cols-7 gap-1 mb-2 text-center font-mono">
+                    {SHORT_DAYS.map(day => (
+                      <div key={day} className="text-[10px] font-bold text-[#52564f]">
+                        {day}
+                      </div>
+                    ))}
+                  </div>
 
-                {/* Days Grid */}
-                <div className="grid grid-cols-7 gap-1.5">
-                  {blanks.map(b => (
-                    <div key={`blank-${b}`} className="aspect-square" />
-                  ))}
+                  {/* Days Grid */}
+                  <div className="grid grid-cols-7 gap-1">
+                    {blanks.map(b => (
+                      <div key={`blank-${b}`} className="aspect-square" />
+                    ))}
 
-                  {days.map(day => {
-                    const key = `${monthNum}/${day}`;
-                    const entry = entryMap.get(key);
-                    const hasAlbum = Boolean(entry && entry.album);
-                    const isHovered = hoveredKey === key;
-                    const cacheKey = entry && hasAlbum ? getAlbumCacheKey(entry.artist, entry.album) : '';
-                    const albumMeta = cacheKey ? albumMetaMap[cacheKey] : undefined;
-                    const isLoadingArt = cacheKey !== '' && loadingArtKey === cacheKey;
-                    const links = entry && hasAlbum ? getExternalLinks(entry.artist, entry.album, albumMeta) : null;
+                    {days.map(day => {
+                      const key = `${monthNum}/${day}`;
+                      const entry = entryMap.get(key);
+                      const hasAlbum = Boolean(entry && entry.album);
+                      const isHovered = hoveredKey === key;
+                      const cacheKey = entry && hasAlbum ? getAlbumCacheKey(entry.artist, entry.album) : '';
+                      const albumMeta = cacheKey ? albumMetaMap[cacheKey] : undefined;
+                      const isLoadingArt = cacheKey !== '' && loadingArtKey === cacheKey;
+                      const links = entry && hasAlbum ? getExternalLinks(entry.artist, entry.album, albumMeta) : null;
 
-                    return (
-                      <div
-                        key={key}
-                        className="relative"
-                        onMouseEnter={() => hasAlbum && handleOpenDay(key)}
-                        onMouseLeave={() => hasAlbum && handleScheduleClose(key)}
-                        onClick={() => {
-                          if (hasAlbum) {
-                            if (hoveredKey === key) {
-                              setHoveredKey(null);
-                            } else {
-                              handleOpenDay(key);
-                            }
-                          }
-                        }}
-                      >
+                      return (
                         <div
-                          className={cn(
-                            "aspect-square rounded-xl border text-xs font-bold flex flex-col items-center justify-center transition-all select-none relative",
-                            getRatingColorClasses(entry?.rating ?? null, hasAlbum),
-                            hasAlbum && "cursor-pointer hover:scale-110 hover:z-20"
-                          )}
+                          key={key}
+                          className="relative"
+                          onMouseEnter={() => hasAlbum && handleOpenDay(key)}
+                          onMouseLeave={() => hasAlbum && handleScheduleClose(key)}
+                          onClick={() => {
+                            if (hasAlbum) {
+                              if (hoveredKey === key) {
+                                setHoveredKey(null);
+                              } else {
+                                handleOpenDay(key);
+                              }
+                            }
+                          }}
                         >
-                          <span>{day}</span>
-                          {hasAlbum && entry?.rating && entry.rating >= 4 && (
-                            <span className="w-1 h-1 rounded-full bg-amber-300 mt-0.5" />
-                          )}
-                        </div>
+                          <div
+                            className={cn(
+                              "aspect-square border text-xs font-mono flex flex-col items-center justify-center transition-all select-none relative",
+                              getRatingColorClasses(entry?.rating ?? null, hasAlbum),
+                              hasAlbum && "cursor-pointer hover:border-[#2c352d] hover:shadow-[1px_1px_0px_0px_#2c352d]"
+                            )}
+                          >
+                            <span>{day}</span>
+                            {hasAlbum && entry?.rating && entry.rating >= 4 && (
+                              <span className="w-1 h-1 rounded-full bg-amber-400 mt-0.5" />
+                            )}
+                          </div>
 
-                        {/* Hover Popup */}
-                        <AnimatePresence>
-                          {isHovered && entry && hasAlbum && links && (
-                            <motion.div
-                              initial={{ opacity: 0, y: 6, scale: 0.95 }}
-                              animate={{ opacity: 1, y: 0, scale: 1 }}
-                              exit={{ opacity: 0, y: 4, scale: 0.95 }}
-                              transition={{ duration: 0.15 }}
-                              onMouseEnter={() => handleOpenDay(key)}
-                              onMouseLeave={() => handleScheduleClose(key)}
-                              onClick={e => e.stopPropagation()}
-                              className="absolute z-50 bottom-full left-1/2 -translate-x-1/2 mb-2.5 w-80 p-4 rounded-2xl bg-slate-900 text-white shadow-2xl border border-slate-700/80 after:content-[''] after:absolute after:top-full after:inset-x-0 after:h-3"
-                            >
-                              <div className="flex items-center justify-between text-[11px] font-semibold text-slate-400 mb-2.5">
-                                <span className="flex items-center gap-1">
-                                  <CalendarIcon className="w-3 h-3 text-brand-400" />
-                                  {monthName} {day}, {selectedYear}
-                                </span>
-                                {entry.duration && (
-                                  <span className="flex items-center gap-1 text-slate-300">
-                                    <Clock className="w-3 h-3 text-indigo-400" />
-                                    {entry.duration}
+                          {/* Hover Popup Dossier */}
+                          <AnimatePresence>
+                            {isHovered && entry && hasAlbum && links && (
+                              <motion.div
+                                initial={{ opacity: 0, y: 4 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: 3 }}
+                                transition={{ duration: 0.12 }}
+                                onMouseEnter={() => handleOpenDay(key)}
+                                onMouseLeave={() => handleScheduleClose(key)}
+                                onClick={e => e.stopPropagation()}
+                                className="absolute z-50 bottom-full left-1/2 -translate-x-1/2 mb-2 w-80 p-4 bg-[#1a1c19] text-[#fcfbf8] border-2 border-[#2c352d] shadow-[4px_4px_0px_0px_#2c352d] font-mono text-xs after:content-[''] after:absolute after:top-full after:inset-x-0 after:h-3"
+                              >
+                                <div className="flex items-center justify-between text-[10px] font-bold text-[#8e8e8e] mb-2.5 border-b border-[#333] pb-1.5">
+                                  <span className="flex items-center gap-1 text-emerald-400">
+                                    <CalendarIcon className="w-3 h-3" />
+                                    {monthName} {day}, {selectedYear}
                                   </span>
-                                )}
-                              </div>
-
-                              {/* Album Art + Details */}
-                              <div className="flex items-start gap-3.5">
-                                <div className="w-16 h-16 rounded-xl bg-slate-800 border border-slate-700/80 overflow-hidden shrink-0 flex items-center justify-center relative shadow-md">
-                                  {albumMeta?.artworkUrl ? (
-                                    <img
-                                      src={albumMeta.artworkUrl}
-                                      alt={`${entry.album} cover`}
-                                      className="w-full h-full object-cover"
-                                      loading="lazy"
-                                    />
-                                  ) : isLoadingArt ? (
-                                    <Disc3 className="w-6 h-6 text-brand-400 animate-spin" />
-                                  ) : (
-                                    <Disc3 className="w-6 h-6 text-slate-600" />
+                                  {entry.duration && (
+                                    <span className="flex items-center gap-1 text-[#ccc]">
+                                      <Clock className="w-3 h-3" />
+                                      {entry.duration}
+                                    </span>
                                   )}
                                 </div>
 
-                                <div className="min-w-0 flex-1 space-y-1">
-                                  <a
-                                    href={links.rymAlbum}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="block font-bold text-sm text-white leading-snug hover:text-brand-300 transition-colors line-clamp-2"
-                                    title={`Search "${entry.album}" on RateYourMusic`}
-                                  >
-                                    {entry.album}
-                                  </a>
-                                  <a
-                                    href={links.wikiArtist}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="block text-xs font-medium text-brand-300 hover:text-brand-200 hover:underline transition-colors truncate"
-                                    title={`Look up ${entry.artist} on Wikipedia`}
-                                  >
-                                    {entry.artist}
-                                  </a>
-                                </div>
-                              </div>
+                                {/* Album Art + Details */}
+                                <div className="flex items-start gap-3">
+                                  <div className="w-16 h-16 bg-[#111] border border-[#444] overflow-hidden shrink-0 flex items-center justify-center relative shadow-sm">
+                                    {albumMeta?.artworkUrl ? (
+                                      <img
+                                        src={albumMeta.artworkUrl}
+                                        alt={`${entry.album} cover`}
+                                        className="w-full h-full object-cover"
+                                        loading="lazy"
+                                      />
+                                    ) : isLoadingArt ? (
+                                      <Disc3 className="w-6 h-6 text-emerald-400 animate-spin" />
+                                    ) : (
+                                      <Disc3 className="w-6 h-6 text-[#555]" />
+                                    )}
+                                  </div>
 
-                              {/* Rating Bar */}
-                              {entry.rating !== null && (
-                                <div className="mt-3 pt-2.5 border-t border-slate-800 flex items-center justify-between">
-                                  {renderStars(entry.rating)}
-                                  <span className="text-xs font-extrabold text-amber-400">
-                                    {entry.rating} / 5
+                                  <div className="min-w-0 flex-1 space-y-1">
+                                    <a
+                                      href={links.rymAlbum}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="block font-bold text-sm text-[#fcfbf8] leading-tight hover:text-emerald-300 transition-colors line-clamp-2"
+                                      title={`Search "${entry.album}" on RateYourMusic`}
+                                    >
+                                      {entry.album}
+                                    </a>
+                                    <a
+                                      href={links.wikiArtist}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="block text-xs text-emerald-400 hover:underline transition-colors truncate"
+                                      title={`Look up ${entry.artist} on Wikipedia`}
+                                    >
+                                      {entry.artist}
+                                    </a>
+                                  </div>
+                                </div>
+
+                                {/* Rating Bar */}
+                                {entry.rating !== null && (
+                                  <div className="mt-3 pt-2 border-t border-[#333] flex items-center justify-between">
+                                    {renderStars(entry.rating)}
+                                    <span className="text-xs font-bold text-amber-400">
+                                      {entry.rating} / 5.0
+                                    </span>
+                                  </div>
+                                )}
+
+                                {/* Links */}
+                                <div className="mt-2.5 pt-2 border-t border-[#333] flex items-center justify-between gap-1.5">
+                                  <span className="text-[10px] font-bold text-[#888]">
+                                    INDEX:
                                   </span>
+                                  <div className="flex flex-wrap items-center gap-1">
+                                    <a
+                                      href={links.rymAlbum}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="px-1.5 py-0.5 bg-[#2a2a2a] hover:bg-[#37794b] text-[10px] font-bold text-[#e0e0e0] hover:text-white border border-[#444] transition-colors"
+                                      title="Search Album on RateYourMusic"
+                                    >
+                                      RYM
+                                    </a>
+                                    <a
+                                      href={links.wikiAlbum}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="px-1.5 py-0.5 bg-[#2a2a2a] hover:bg-[#37794b] text-[10px] font-bold text-[#e0e0e0] hover:text-white border border-[#444] transition-colors"
+                                      title="Look up Album on Wikipedia"
+                                    >
+                                      Wiki
+                                    </a>
+                                    <a
+                                      href={links.discogsAlbum}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="px-1.5 py-0.5 bg-[#2a2a2a] hover:bg-[#37794b] text-[10px] font-bold text-[#e0e0e0] hover:text-white border border-[#444] transition-colors"
+                                      title="Search Album on Discogs"
+                                    >
+                                      Discogs
+                                    </a>
+                                    <a
+                                      href={links.appleMusicAlbum}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="px-1.5 py-0.5 bg-[#2a2a2a] hover:bg-[#37794b] text-[10px] font-bold text-[#e0e0e0] hover:text-white border border-[#444] transition-colors"
+                                      title="View on Apple Music"
+                                    >
+                                      Apple
+                                    </a>
+                                  </div>
                                 </div>
-                              )}
 
-                              {/* Quick-Link Service Pills */}
-                              <div className="mt-2.5 pt-2.5 border-t border-slate-800/90 flex items-center justify-between gap-1.5">
-                                <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">
-                                  Links
-                                </span>
-                                <div className="flex flex-wrap items-center gap-1">
-                                  <a
-                                    href={links.rymAlbum}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-800 hover:bg-brand-600 text-[10px] font-bold text-slate-300 hover:text-white border border-slate-700/80 hover:border-brand-500 transition-colors"
-                                    title="Search Album on RateYourMusic"
-                                  >
-                                    RYM
-                                    <ExternalLink className="w-2.5 h-2.5 opacity-75" />
-                                  </a>
-                                  <a
-                                    href={links.wikiAlbum}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-800 hover:bg-brand-600 text-[10px] font-bold text-slate-300 hover:text-white border border-slate-700/80 hover:border-brand-500 transition-colors"
-                                    title="Look up Album on Wikipedia"
-                                  >
-                                    Wiki
-                                    <ExternalLink className="w-2.5 h-2.5 opacity-75" />
-                                  </a>
-                                  <a
-                                    href={links.discogsAlbum}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-800 hover:bg-brand-600 text-[10px] font-bold text-slate-300 hover:text-white border border-slate-700/80 hover:border-brand-500 transition-colors"
-                                    title="Search Album on Discogs"
-                                  >
-                                    Discogs
-                                    <ExternalLink className="w-2.5 h-2.5 opacity-75" />
-                                  </a>
-                                  <a
-                                    href={links.lastFmAlbum}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-800 hover:bg-brand-600 text-[10px] font-bold text-slate-300 hover:text-white border border-slate-700/80 hover:border-brand-500 transition-colors"
-                                    title="View on Last.fm"
-                                  >
-                                    Last.fm
-                                    <ExternalLink className="w-2.5 h-2.5 opacity-75" />
-                                  </a>
-                                  <a
-                                    href={links.appleMusicAlbum}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-800 hover:bg-brand-600 text-[10px] font-bold text-slate-300 hover:text-white border border-slate-700/80 hover:border-brand-500 transition-colors"
-                                    title="View on Apple Music"
-                                  >
-                                    Apple
-                                    <ExternalLink className="w-2.5 h-2.5 opacity-75" />
-                                  </a>
-                                </div>
-                              </div>
-
-                              {/* Tooltip Caret */}
-                              <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-6 border-transparent border-t-slate-900" />
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </div>
-                    );
-                  })}
+                                <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-[#1a1c19]" />
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
             </div>
