@@ -1,9 +1,10 @@
-import { Briefcase, GraduationCap, User, FileText, Code, Mail, Github, Linkedin, ExternalLink, NotebookPen, Disc3 } from 'lucide-react';
+import { Briefcase, GraduationCap, User, FileText, Code, Mail, Github, Linkedin, ExternalLink, NotebookPen, Disc3, Camera } from 'lucide-react';
 
 export const navigation = [
   { name: 'About', href: '/', icon: User },
   { name: 'Resume', href: '/resume', icon: Briefcase },
   { name: 'Music', href: '/music', icon: Disc3 },
+  { name: 'Photography', href: '/photography', icon: Camera },
   //{ name: 'Portfolio', href: '/portfolio', icon: Code },
   //{ name: 'Cover Letter', href: '/cover-letter', icon: FileText },
   //{ name: 'Blog', href: '/blog', icon: NotebookPen },
