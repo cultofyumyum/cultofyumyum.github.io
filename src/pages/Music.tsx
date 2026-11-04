@@ -552,10 +552,15 @@ export default function MusicCalendar() {
           const blanks = Array.from({ length: firstDayOfWeek }, (_, i) => i);
           const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
 
+          const isMonthHovered = hoveredKey !== null && hoveredKey.startsWith(`${monthNum}/`);
+
           return (
             <div
               key={monthName}
-              className="retro-box overflow-hidden flex flex-col justify-between"
+              className={cn(
+                "retro-box flex flex-col justify-between relative",
+                isMonthHovered ? "z-30" : "z-0"
+              )}
             >
               <div>
                 {/* Month Titlebar */}
@@ -596,10 +601,24 @@ export default function MusicCalendar() {
                       const isLoadingArt = cacheKey !== '' && loadingArtKey === cacheKey;
                       const links = entry && hasAlbum ? getExternalLinks(entry.artist, entry.album, albumMeta) : null;
 
+                      const dayOfWeek = (firstDayOfWeek + day - 1) % 7;
+                      const popupAlignClass =
+                        dayOfWeek <= 1
+                          ? "left-0 translate-x-0"
+                          : dayOfWeek >= 5
+                          ? "right-0 translate-x-0 left-auto"
+                          : "left-1/2 -translate-x-1/2";
+                      const caretAlignClass =
+                        dayOfWeek <= 1
+                          ? "left-4 translate-x-0"
+                          : dayOfWeek >= 5
+                          ? "right-4 translate-x-0 left-auto"
+                          : "left-1/2 -translate-x-1/2";
+
                       return (
                         <div
                           key={key}
-                          className="relative"
+                          className={cn("relative", isHovered ? "z-40" : "z-1")}
                           onMouseEnter={() => hasAlbum && handleOpenDay(key)}
                           onMouseLeave={() => hasAlbum && handleScheduleClose(key)}
                           onClick={() => {
@@ -636,7 +655,10 @@ export default function MusicCalendar() {
                                 onMouseEnter={() => handleOpenDay(key)}
                                 onMouseLeave={() => handleScheduleClose(key)}
                                 onClick={e => e.stopPropagation()}
-                                className="absolute z-50 bottom-full left-1/2 -translate-x-1/2 mb-2 w-80 p-4 bg-[#1a1c19] text-[#fcfbf8] border-2 border-[#2c352d] shadow-[4px_4px_0px_0px_#2c352d] font-mono text-xs after:content-[''] after:absolute after:top-full after:inset-x-0 after:h-3"
+                                className={cn(
+                                  "absolute z-50 bottom-full mb-2 w-80 p-4 bg-[#1a1c19] text-[#fcfbf8] border-2 border-[#2c352d] shadow-[4px_4px_0px_0px_#2c352d] font-mono text-xs after:content-[''] after:absolute after:top-full after:inset-x-0 after:h-3 pointer-events-auto",
+                                  popupAlignClass
+                                )}
                               >
                                 <div className="flex items-center justify-between text-[10px] font-bold text-[#8e8e8e] mb-2.5 border-b border-[#333] pb-1.5">
                                   <span className="flex items-center gap-1 text-emerald-400">
@@ -745,7 +767,7 @@ export default function MusicCalendar() {
                                   </div>
                                 </div>
 
-                                <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-[#1a1c19]" />
+                                <div className={cn("absolute top-full -mt-1 border-4 border-transparent border-t-[#1a1c19]", caretAlignClass)} />
                               </motion.div>
                             )}
                           </AnimatePresence>
