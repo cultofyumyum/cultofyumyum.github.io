@@ -199,7 +199,7 @@ export default function About() {
                   A comprehensive, daily listening calendar logged every morning and synced live from my personal spreadsheet.
                 </p>
                 <div className="font-mono text-[11px] text-[#1a1c19] space-y-1 bg-[#edeae0] p-2.5 border border-[#c8c4b7]">
-                  <div>• Multi-year archives (2018–2026)</div>
+                  <div>• Multi-year archives (2024–2026)</div>
                   <div>• Ratings, duration &amp; analytics</div>
                   <div>• Apple Music &amp; RYM links</div>
                 </div>

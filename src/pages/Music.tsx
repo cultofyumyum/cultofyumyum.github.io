@@ -22,10 +22,8 @@ const SPREADSHEET_ID = '1LN3XfB5tX9b6tW0lcXZ9SvzKRDk0kGr4n9pcRh-xNME';
 
 const YEAR_TABS: Record<string, { gid: string; label: string }> = {
   '2026': { gid: '1632475998', label: '2026' },
-  '2024': { gid: '353531138', label: '2024' },
-  '2023': { gid: '1503042539', label: '2023' },
-  '2022': { gid: '0', label: '2022' },
-  '2018': { gid: '283202072', label: '2018' },
+  '2025': { gid: '353531138', label: '2025' },
+  '2024': { gid: '913830939', label: '2024' },
 };
 
 const MONTH_NAMES = [
@@ -105,6 +103,25 @@ function parseCSVRow(line: string): string[] {
   return result;
 }
 
+function parseDurationToSeconds(dur?: string): number {
+  if (!dur) return 0;
+  const parts = dur.trim().split(':').map(Number);
+  if (parts.length === 3 && !parts.some(isNaN)) {
+    return parts[0] * 3600 + parts[1] * 60 + parts[2];
+  }
+  if (parts.length === 2 && !parts.some(isNaN)) {
+    return parts[0] * 60 + parts[1];
+  }
+  return 0;
+}
+
+function formatDurationHMM(totalSeconds: number): string {
+  if (totalSeconds <= 0) return '0h 00m';
+  const hours = Math.floor(totalSeconds / 3600);
+  const mins = Math.round((totalSeconds % 3600) / 60);
+  return `${hours}h ${mins}m`;
+}
+
 function parseSheetCSV(csvText: string): AlbumEntry[] {
   const lines = csvText.split(/\r?\n/).filter(Boolean);
   if (lines.length < 2) return [];
@@ -118,9 +135,9 @@ function parseSheetCSV(csvText: string): AlbumEntry[] {
   const dowIdx = headers.findIndex(h => h === 'dow');
   const monthIdx = headers.findIndex(h => h === 'month');
   const weekIdx = headers.findIndex(h => h === 'week');
-  const monthlyAvgIdx = headers.findIndex(h => h.includes('monthly avg'));
-  const totalDurIdx = headers.findIndex(h => h.includes('duration') && h !== 'duration');
-  const yearAvgIdx = headers.findIndex(h => h.includes('year average') || h === 'average');
+  const monthlyAvgIdx = headers.findIndex(h => h.includes('monthly avg') || h.includes('monthly average'));
+  const totalDurIdx = headers.findIndex(h => (h.includes('duration') && h !== 'duration') || h.includes('∑'));
+  const yearAvgIdx = headers.findIndex(h => h.includes('year avg') || h.includes('year average') || h === 'average');
 
   const entries: AlbumEntry[] = [];
 
@@ -228,8 +245,11 @@ export default function MusicCalendar() {
 
     async function fetchSheetData() {
       setIsLoading(true);
+      setIsLiveSynced(false);
       if (selectedYear === '2026') {
         setEntries(fallback2026 as AlbumEntry[]);
+      } else {
+        setEntries([]);
       }
 
       try {
@@ -357,24 +377,13 @@ export default function MusicCalendar() {
       ? (rated.reduce((acc, cur) => acc + (cur.rating || 0), 0) / rated.length).toFixed(2)
       : '—';
 
-    // Total minutes calculation from H:MM:SS or M:SS
-    let totalSeconds = 0;
-    for (const item of listened) {
-      if (!item.duration) continue;
-      const parts = item.duration.split(':').map(Number);
-      if (parts.length === 3 && !parts.some(isNaN)) {
-        totalSeconds += parts[0] * 3600 + parts[1] * 60 + parts[2];
-      } else if (parts.length === 2 && !parts.some(isNaN)) {
-        totalSeconds += parts[0] * 60 + parts[1];
-      }
-    }
-    const totalHours = Math.floor(totalSeconds / 3600);
-    const remainingMins = Math.round((totalSeconds % 3600) / 60);
+    // Total runtime calculation
+    const totalSeconds = listened.reduce((acc, cur) => acc + parseDurationToSeconds(cur.duration), 0);
 
     return {
       totalAlbums: listened.length,
       avgRating,
-      listeningTime: totalSeconds > 0 ? `${totalHours}h ${remainingMins}m` : '—',
+      listeningTime: totalSeconds > 0 ? formatDurationHMM(totalSeconds) : '—',
       topRatedCount: rated.filter(e => (e.rating || 0) >= 4).length,
     };
   }, [entries]);
@@ -426,17 +435,6 @@ export default function MusicCalendar() {
                   </button>
                 ))}
               </div>
-
-              <a
-                href={`https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/edit#gid=${YEAR_TABS[selectedYear]?.gid || '0'}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="retro-btn-sm font-mono text-xs px-3 py-1.5 inline-flex items-center gap-1.5 text-[#1a1c19] hover:bg-[#edeae0] font-bold"
-                title="View Source Google Sheet"
-              >
-                <ExternalLink className="w-3 h-3 text-brand-800" />
-                <span>Source Sheet</span>
-              </a>
             </div>
           </div>
 
@@ -540,9 +538,13 @@ export default function MusicCalendar() {
           const firstDayOfWeek = new Date(yearNum, monthIdx, 1).getDay();
 
           let monthAlbumCount = 0;
+          let monthTotalSeconds = 0;
           for (let d = 1; d <= daysInMonth; d++) {
             const entry = entryMap.get(`${monthNum}/${d}`);
-            if (entry && entry.album) monthAlbumCount++;
+            if (entry && entry.album) {
+              monthAlbumCount++;
+              monthTotalSeconds += parseDurationToSeconds(entry.duration);
+            }
           }
 
           if (hideEmptyMonths && monthAlbumCount === 0) {
@@ -567,8 +569,11 @@ export default function MusicCalendar() {
                 <div className="bg-[#2c352d] text-[#fcfbf8] font-mono text-xs px-3.5 py-2 font-bold flex items-center justify-between border-b border-[#2c352d]">
                   <span className="tracking-wider">{monthName.toUpperCase()}</span>
                   {monthAlbumCount > 0 ? (
-                    <span className="text-emerald-300 font-semibold text-[11px]">
-                      {monthAlbumCount} {monthAlbumCount === 1 ? 'ALBUM' : 'ALBUMS'}
+                    <span
+                      className="text-emerald-300 font-semibold text-[11px]"
+                      title={`${monthAlbumCount} ${monthAlbumCount === 1 ? 'album' : 'albums'} logged`}
+                    >
+                      {formatDurationHMM(monthTotalSeconds)}
                     </span>
                   ) : (
                     <span className="text-[#8e8e8e] font-normal text-[11px]">NO ENTRIES</span>
